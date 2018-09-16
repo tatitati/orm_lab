@@ -30,4 +30,18 @@ class UserRepositoryDBTest extends KernelTestCase
         $this->assertInternalType('integer', $userId);
         $this->assertTrue($userId !== 0);
     }
+
+    public function testRead()
+    {
+        $user1 = new User('user1');
+        $user2 = new User('user2');
+        $user3 = new User('user3');
+
+
+        $this->repository->save($user1);
+        $this->repository->save($user2);
+        $this->repository->save($user3);
+
+        $this->assertCount(3, $this->repository->findAll());
+    }
 }

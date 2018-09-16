@@ -24,6 +24,6 @@ Class UserRepositoryDB extends EntityRepository
 
     public function findAll()
     {
-        // TODO: Implement findAll() method.
+        return [];
     }
 }
