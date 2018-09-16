@@ -1,10 +1,11 @@
 <?php
-Namespace App\Entity\Infrastructure;
+Namespace App\Entity\PersistenceModel;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
- * @ORM\Entity(repositoryClass="UserRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepositoryDB")
  * @ORM\Table(name="user")
  */
 class User
@@ -17,6 +18,21 @@ class User
      */
     private $id;
 
-        /** @ORM\Column(type="string", name="text") **/
+    /** @ORM\Column(type="string", name="text") **/
     private $name;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function name()
+    {
+        return $this->name;
+    }
+
+    public function id()
+    {
+        return $this->id;
+    }
 }
