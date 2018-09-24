@@ -66,6 +66,22 @@ class UserRepositoryDBTest extends KernelTestCase
         $this->assertInstanceof(Car::class, $user->getCar());
     }
 
+    /**
+     * @test
+     */
+    public function multiple_rows_return_an_array()
+    {
+        $user = new User('Francisco', $car = new Car('Renault', 'black'));
+
+        $this->repository->save($user);
+
+        /** @var User $user */
+        $users = $this->repository->findAll();
+
+        $this->assertInternalType('array', $users);
+        $this->assertContainsOnlyInstancesOf(User::class, $users);
+    }
+
     protected function tearDown()
     {
         parent::tearDown();

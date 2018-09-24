@@ -22,7 +22,11 @@ class User
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", inversedBy="user", cascade={"persist", "remove" })
+     * I DONT NEED TO ADD inversedBy IN HERE AS I'M NOT DOING BIDIRECTIONAL RELATIONSHIPS. AS YOU
+     * CAN SEE I DIDN'T ADD ANY OneToMany SPEC IN THE Car entity. This last is only needed if you want a
+     * bidirectional relationship.
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", cascade={"persist", "remove" })
      */
     private $car;
 
