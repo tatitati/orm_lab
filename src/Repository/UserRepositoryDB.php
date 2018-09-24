@@ -18,8 +18,6 @@ Class UserRepositoryDB extends EntityRepository
     {
         $this->em->persist($user);
         $this->em->flush();
-
-        return $user->id();
     }
 
     public function findAll()

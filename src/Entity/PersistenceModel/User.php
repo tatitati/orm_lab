@@ -23,14 +23,19 @@ class User
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", inversedBy="user")
+     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", inversedBy="user", cascade={"persist", "remove" })
      */
-    private $cars;
+    private $car;
 
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->cars = new ArrayCollection();
+        $this->car = new ArrayCollection();
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function getName()
@@ -38,8 +43,16 @@ class User
         return $this->name;
     }
 
-    public function getCars()
+    /**
+     * @return ArrayCollection|Car[]
+     */
+    public function getCar()
     {
-        return $this->cars;
+        return $this->car;
+    }
+
+    public function setCar(Car $car)
+    {
+        $this->car = $car;
     }
 }
