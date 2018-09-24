@@ -2,26 +2,14 @@
 namespace App\Repository;
 
 use App\Entity\PersistenceModel\User;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 
 Class UserRepositoryDB extends EntityRepository
 {
-    private $em;
-
-    public function __construct(ObjectManager $entityManager)
-    {
-        $this->em = $entityManager;
-    }
-
     public function save(User $user)
     {
-        $this->em->persist($user);
-        $this->em->flush();
-    }
-
-    public function findAll()
-    {
-        return [];
+        $em = $this->getEntityManager();
+        $em->persist($user);
+        $em->flush();
     }
 }

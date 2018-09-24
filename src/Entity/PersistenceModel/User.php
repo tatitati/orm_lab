@@ -1,7 +1,6 @@
 <?php
 Namespace App\Entity\PersistenceModel;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -27,10 +26,10 @@ class User
      */
     private $car;
 
-    public function __construct(string $name)
+    public function __construct(string $name, Car $car) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
-        $this->car = new ArrayCollection();
+        $this->car = $car;
     }
 
     public function getId()
@@ -43,16 +42,8 @@ class User
         return $this->name;
     }
 
-    /**
-     * @return ArrayCollection|Car[]
-     */
-    public function getCar()
+    public function getCar(): Car
     {
         return $this->car;
-    }
-
-    public function setCar(Car $car)
-    {
-        $this->car = $car;
     }
 }

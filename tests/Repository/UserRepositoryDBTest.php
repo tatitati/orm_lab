@@ -26,10 +26,7 @@ class UserRepositoryDBTest extends KernelTestCase
     public function on_saving_the_field_id_of_user_is_filled_by_doctrine_automatically()
     {
         // id user is null right now. Persistence ORM will assign an autoincremental id
-        $user = new User('Francisco');
-        $car = new Car('Renault', 'black');
-        $user->setCar($car);
-
+        $user = new User('Francisco', $car = new Car('Renault', 'black'));
 
         $this->assertNull($user->getId());
         $this->assertNull($car->getId());
@@ -53,17 +50,27 @@ class UserRepositoryDBTest extends KernelTestCase
         );
     }
 
-//    public function testRead()
-//    {
-//        $user1 = new User('user1');
-//        $user2 = new User('user2');
-//        $user3 = new User('user3');
-//
-//
-//        $this->repository->save($user1);
-//        $this->repository->save($user2);
-//        $this->repository->save($user3);
-//
-//        $this->assertCount(3, $this->repository->findAll());
-//    }
+    /**
+     * @test
+     */
+    public function when_reading_user_also_load_referenced_entities_like_car()
+    {
+        $user = new User('Francisco', $car = new Car('Renault', 'black'));
+
+        $this->repository->save($user);
+
+        /** @var User $user */
+        $user = $this->repository->findOneBy(['id' => 1]);
+
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertInstanceof(Car::class, $user->getCar());
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->em->close();
+        $this->em = null;
+    }
 }
