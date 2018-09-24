@@ -111,9 +111,14 @@ class UserRepositoryDBTest extends KernelTestCase
         $this->assertInstanceOf(User::class, $result);
         $this->assertInstanceOf(Car::class, $result->getCar());
         $this->assertInstanceOf(Book::class, $result->getBook());
+
         // HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
+        $this->assertInstanceOf('Doctrine\ORM\PersistentCollection', $result->getBook()->getUsers());
         $this->assertEquals('user_with_car_and_book_ONE', $result->getBook()->getUsers()[0]->getName());
         $this->assertEquals('user_with_car_and_book_TWO', $result->getBook()->getUsers()[1]->getName());
+
+        // Circular references very visual in here
+        $this->assertInstanceOf(Book::class, $result->getBook()->getUsers()[0]->getBook()->getUsers()[0]->getBook());
     }
 
     protected function tearDown()
