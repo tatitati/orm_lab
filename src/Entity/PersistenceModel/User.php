@@ -64,4 +64,11 @@ class User
     {
         return $this->book;
     }
+
+    public function setCar()
+    {
+        // when reading data this is never called!!!!!!, Reflection bypass setters and constructors, and set values directly into the variables
+        echo 'asdfasdfasdfadsf';
+        die('asdfasdfasdfadsfasdfasdf');
+    }
 }
