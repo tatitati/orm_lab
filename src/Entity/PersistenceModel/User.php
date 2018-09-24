@@ -1,6 +1,7 @@
 <?php
 Namespace App\Entity\PersistenceModel;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -18,21 +19,27 @@ class User
      */
     private $id;
 
-    /** @ORM\Column(type="string", name="text") **/
+    /** @ORM\Column(type="string", name="name") **/
     private $name;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", inversedBy="user")
+     */
+    private $cars;
 
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->cars = new ArrayCollection();
     }
 
-    public function name()
+    public function getName()
     {
         return $this->name;
     }
 
-    public function id()
+    public function getCars()
     {
-        return $this->id;
+        return $this->cars;
     }
 }
