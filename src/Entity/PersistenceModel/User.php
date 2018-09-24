@@ -26,14 +26,23 @@ class User
      * CAN SEE I DIDN'T ADD ANY OneToMany SPEC IN THE Car entity. This last is only needed if you want a
      * bidirectional relationship.
      *
+     * @var Car
      * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", cascade={"persist", "remove" })
      */
     private $car;
 
-    public function __construct(string $name, Car $car) // because in the constructor $car is a mandatory value, this means that is not nullable in db
+    /**
+     * @var Book
+     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Book", cascade={"persist", "remove" }, inversedBy="users")
+     */
+    private $book;
+
+
+    public function __construct(string $name, Car $car, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
         $this->car = $car;
+        $this->book = $book;
     }
 
     public function getId()
@@ -49,5 +58,10 @@ class User
     public function getCar(): Car
     {
         return $this->car;
+    }
+
+    public function getBook(): Book
+    {
+        return $this->book;
     }
 }

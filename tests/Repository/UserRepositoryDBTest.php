@@ -1,9 +1,11 @@
 <?php
 Namespace Tests\App\Repository;
 
+use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryDBTest extends KernelTestCase
@@ -60,10 +62,10 @@ class UserRepositoryDBTest extends KernelTestCase
         $this->repository->save($user);
 
         /** @var User $user */
-        $user = $this->repository->findOneBy(['id' => 1]);
+        $result = $this->repository->findOneBy(['id' => 1]);
 
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertInstanceof(Car::class, $user->getCar());
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertInstanceof(Car::class, $result->getCar());
     }
 
     /**
@@ -76,10 +78,42 @@ class UserRepositoryDBTest extends KernelTestCase
         $this->repository->save($user);
 
         /** @var User $user */
-        $users = $this->repository->findAll();
+        $result = $this->repository->findAll();
 
-        $this->assertInternalType('array', $users);
-        $this->assertContainsOnlyInstancesOf(User::class, $users);
+        $this->assertInternalType('array', $result);
+        $this->assertContainsOnlyInstancesOf(User::class, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function bidirectional_relations()
+    {
+        $book = new Book('title1', 'category1');
+        $user1 = new User(
+            'user_with_car_and_book_ONE',
+            new Car('Renault', 'black'),
+            $book
+        );
+
+        $user2 = new User(
+            'user_with_car_and_book_TWO',
+            new Car('Renault', 'black'),
+            $book
+        );
+
+        $this->repository->save($user1);
+        $this->repository->save($user2);
+
+        /** @var User $user */
+        $result = $this->repository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertInstanceOf(Car::class, $result->getCar());
+        $this->assertInstanceOf(Book::class, $result->getBook());
+        // HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
+        $this->assertEquals('user_with_car_and_book_ONE', $result->getBook()->getUsers()[0]->getName());
+        $this->assertEquals('user_with_car_and_book_TWO', $result->getBook()->getUsers()[1]->getName());
     }
 
     protected function tearDown()
