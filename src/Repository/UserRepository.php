@@ -1,0 +1,2 @@
+<?php
+// create an interface!
