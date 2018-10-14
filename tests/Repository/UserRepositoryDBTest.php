@@ -25,7 +25,7 @@ class UserRepositoryDBTest extends KernelTestCase
     /**
      * @test
      */
-    public function on_saving_the_field_id_of_user_is_filled_by_doctrine_automatically()
+    public function on_writing_the_field_id_of_user_is_filled_by_doctrine_automatically()
     {
         // id user is null right now. Persistence ORM will assign an autoincremental id
         $user = new User('Francisco', $car = new Car('Renault', 'black'));
@@ -55,7 +55,7 @@ class UserRepositoryDBTest extends KernelTestCase
     /**
      * @test
      */
-    public function when_reading_user_also_load_referenced_entities_like_car()
+    public function on_reading_user_also_load_referenced_entities_like_car()
     {
         $user = new User('Francisco', $car = new Car('Renault', 'black'));
 
@@ -71,7 +71,7 @@ class UserRepositoryDBTest extends KernelTestCase
     /**
      * @test
      */
-    public function multiple_rows_return_an_array()
+    public function on_reading_multiple_rows_return_an_array()
     {
         $user = new User('Francisco', $car = new Car('Renault', 'black'));
 
@@ -87,7 +87,7 @@ class UserRepositoryDBTest extends KernelTestCase
     /**
      * @test
      */
-    public function bidirectional_relations()
+    public function on_reading_bidirectional_relations()
     {
         $book = new Book('title1', 'category1');
         $user1 = new User(
