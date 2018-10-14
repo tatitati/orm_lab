@@ -8,18 +8,24 @@ parameters:
 doctrine:
     dbal:
         # configure these for your database server
-        driver: 'pdo_mysql'
-        server_version: '5.7'
-        charset: utf8mb4
-        default_table_options:
-            charset: utf8mb4
-            collate: utf8mb4_unicode_ci
+        default_connection: default
+        connections:
+            default:
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+                default_table_options:
+                    charset: utf8mb4
+                    collate: utf8mb4_unicode_ci
 
-        host:     localhost
-        port:     3306
-        dbname:   orm_lab
-        user:     root
-        password: 
+                host:     localhost
+                port:     3306
+                dbname:   orm_lab
+                user:     root
+                password:
+
+        types:
+            address: App\Entity\CustomMappingTypes\AddressMapper
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore

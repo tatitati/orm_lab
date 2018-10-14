@@ -1,6 +1,7 @@
 <?php
-Namespace Tests\App\Repository;
+Namespace Tests\App\Repository\UserRepository;
 
+use App\Entity\CustomMappingTypes\Address;
 use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
@@ -8,48 +9,17 @@ use App\Repository\UserRepositoryDB;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class UserRepositoryDBTest extends KernelTestCase
+class RelationsTest extends KernelTestCase
 {
     /** @var UserRepositoryDB */
-    private $repository;
+    private $userRepository;
     private $em;
 
     public function setUp()
     {
         $kernel = self::bootKernel();
         $this->em = $kernel->getContainer()->get('doctrine')->getManager();
-
-        $this->repository = $this->em->getRepository(User::class);
-    }
-
-    /**
-     * @test
-     */
-    public function on_writing_the_field_id_of_user_is_filled_by_doctrine_automatically()
-    {
-        // id user is null right now. Persistence ORM will assign an autoincremental id
-        $user = new User('Francisco', $car = new Car('Renault', 'black'));
-
-        $this->assertNull($user->getId());
-        $this->assertNull($car->getId());
-
-        $this->repository->save($user);
-
-        // If we are creating a new User, the id is automatically populated even if the
-        // property is private (using reflection) and there is no setter for it.
-        $this->assertThat(
-            $user->getId(),
-            $this->logicalAnd(
-                $this->greaterThan(0), $this->isType('integer')
-            )
-        );
-
-        $this->assertThat(
-            $car->getId(),
-            $this->logicalAnd(
-                $this->greaterThan(0), $this->isType('integer')
-            )
-        );
+        $this->userRepository = $this->em->getRepository(User::class);
     }
 
     /**
@@ -57,12 +27,9 @@ class UserRepositoryDBTest extends KernelTestCase
      */
     public function on_reading_user_also_load_referenced_entities_like_car()
     {
-        $user = new User('Francisco', $car = new Car('Renault', 'black'));
+        $this->userRepository->save($this->user());
 
-        $this->repository->save($user);
-
-        /** @var User $user */
-        $result = $this->repository->findOneBy(['id' => 1]);
+        $result = $this->userRepository->findOneBy(['id' => 1]);
 
         $this->assertInstanceOf(User::class, $result);
         $this->assertInstanceof(Car::class, $result->getCar());
@@ -73,12 +40,10 @@ class UserRepositoryDBTest extends KernelTestCase
      */
     public function on_reading_multiple_rows_return_an_array()
     {
-        $user = new User('Francisco', $car = new Car('Renault', 'black'));
-
-        $this->repository->save($user);
+        $this->userRepository->save($this->user());
 
         /** @var User $user */
-        $result = $this->repository->findAll();
+        $result = $this->userRepository->findAll();
 
         $this->assertInternalType('array', $result);
         $this->assertContainsOnlyInstancesOf(User::class, $result);
@@ -90,23 +55,21 @@ class UserRepositoryDBTest extends KernelTestCase
     public function on_reading_bidirectional_relations()
     {
         $book = new Book('title1', 'category1');
-        $user1 = new User(
+        $user1 = $this->user(
             'user_with_car_and_book_ONE',
-            new Car('Renault', 'black'),
             $book
         );
 
-        $user2 = new User(
+        $user2 = $this->user(
             'user_with_car_and_book_TWO',
-            new Car('Renault', 'black'),
             $book
         );
 
-        $this->repository->save($user1);
-        $this->repository->save($user2);
+        $this->userRepository->save($user1);
+        $this->userRepository->save($user2);
 
         /** @var User $user */
-        $result = $this->repository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+        $result = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
         $this->assertInstanceOf(User::class, $result);
         $this->assertInstanceOf(Car::class, $result->getCar());
@@ -124,8 +87,21 @@ class UserRepositoryDBTest extends KernelTestCase
     protected function tearDown()
     {
         parent::tearDown();
-
         $this->em->close();
         $this->em = null;
+    }
+
+    private function user(string $name = 'Francisco', $book = null)
+    {
+        return new User(
+            $name,
+            new Car('Renault', 'black'),
+            new Address(
+                'Madrid',
+                '23NRR',
+                'McShit Square'
+            ),
+            $book
+        );
     }
 }

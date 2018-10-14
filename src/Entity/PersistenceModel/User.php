@@ -1,6 +1,7 @@
 <?php
 Namespace App\Entity\PersistenceModel;
 
+use App\Entity\CustomMappingTypes\Address;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -37,12 +38,20 @@ class User
      */
     private $book;
 
+    /**
+     * Custom mapping type
+     *
+     * @ORM\Column(type="address", name="address") *
+     */
+    private $address;
 
-    public function __construct(string $name, Car $car, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
+
+    public function __construct(string $name, Car $car, Address $address, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
         $this->car = $car;
         $this->book = $book;
+        $this->address = $address;
     }
 
     public function getId()
@@ -63,6 +72,11 @@ class User
     public function getBook(): Book
     {
         return $this->book;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
     }
 
     public function setCar()
