@@ -40,6 +40,8 @@ class User
 
     /**
      * Custom mapping type
+     * Example of database value: Madrid,23NRR,McShit Square
+     * When reading from database, this is converted into an object Address
      *
      * @ORM\Column(type="address", name="address") *
      */
