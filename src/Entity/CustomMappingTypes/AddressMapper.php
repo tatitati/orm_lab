@@ -30,6 +30,12 @@ class AddressMapper extends Type
         ]);
     }
 
+    /**
+     * in the User data model class we will specify the field $address as "address" type. This will let to know to Doctrine
+     * that this field has some mapper behind the scene. The it will use this mapper.
+     *
+     * @see \App\Entity\PersistenceModel\User::46
+     */
     public function getName()
     {
         return 'address';
