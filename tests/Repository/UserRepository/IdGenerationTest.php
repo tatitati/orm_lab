@@ -63,6 +63,7 @@ class IdGenerationTest extends KernelTestCase
     {
         return new User(
             'Francisco',
+            'surname1 surname2',
             $car,
             new Address(
                 'Madrid',

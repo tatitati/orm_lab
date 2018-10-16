@@ -95,6 +95,7 @@ class RelationsTest extends KernelTestCase
     {
         return new User(
             $name,
+            'surname1 surname2',
             new Car('Renault', 'black'),
             new Address(
                 'Madrid',

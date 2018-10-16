@@ -22,6 +22,14 @@ class User
     /** @ORM\Column(type="string", name="name") **/
     private $name;
 
+
+    /**
+     * The column mame by default in database will be sur_name
+     *
+     * @ORM\Column(type="string") *
+     */
+    private $surName;
+
     /**
      * I DONT NEED TO ADD inversedBy IN HERE AS I'M NOT DOING BIDIRECTIONAL RELATIONSHIPS. AS YOU
      * CAN SEE I DIDN'T ADD ANY OneToMany SPEC IN THE Car entity. This last is only needed if you want a
@@ -48,22 +56,28 @@ class User
     private $address;
 
 
-    public function __construct(string $name, Car $car, Address $address, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
+    public function __construct(string $name, string $surname, Car $car, Address $address, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
+        $this->surName = $surname;
         $this->car = $car;
         $this->book = $book;
         $this->address = $address;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getSurName(): string
+    {
+        return $this->surName;
     }
 
     public function getCar(): Car

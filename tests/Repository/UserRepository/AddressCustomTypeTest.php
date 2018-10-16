@@ -52,6 +52,7 @@ class AddressCustomRepository extends KernelTestCase
     {
         return new User(
             'Francisco',
+            'surname1 surname2',
             new Car('Renault', 'black'),
             new Address(
                 'Madrid',
