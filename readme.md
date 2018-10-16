@@ -6,11 +6,18 @@
 - [ ] Add doctrine cache
 
 
-## Setup
+## Setup env environment
 ```
 bin/console doctrine:database:drop --force
-bin/console doctrine:database:creat
+bin/console doctrine:database:create
 bin/console doctrine:schema:create
+```
+
+## Setup test environment
+```
+bin/console doctrine:database:drop --force --env=test
+bin/console doctrine:database:create --env=test
+bin/console doctrine:schema:create --env=test
 ```
 
 
