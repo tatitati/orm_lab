@@ -7,14 +7,14 @@
 
 
 # Setup
-## Setup env database
+## env database
 ```
 bin/console doctrine:database:drop --force
 bin/console doctrine:database:create
 bin/console doctrine:schema:create
 ```
 
-## Setup test database
+## test database
 ```
 bin/console doctrine:database:drop --force --env=test
 bin/console doctrine:database:create --env=test
