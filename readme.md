@@ -1,5 +1,12 @@
+## Roadmap
 
-Setup
+- [x] Add custom mapping types
+- [ ] Add multiple entity managers
+- [ ] Create test database
+- [ ] Add doctrine cache
+
+
+## Setup
 ```
 bin/console doctrine:database:drop --force
 bin/console doctrine:database:creat
@@ -8,7 +15,7 @@ bin/console doctrine:schema:create
 
 
 
-Some stuff to play:
+## Some stuff to play:
 ```
 bin/console doctrine:query:sql "select * from user"
 
