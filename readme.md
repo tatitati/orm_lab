@@ -1,5 +1,6 @@
 ## Roadmap
 
+- [x] Create unidirectionals and bidirectionals relations
 - [x] Add custom mapping types (address)
 - [ ] Add multiple entity managers
 - [x] Create test database
