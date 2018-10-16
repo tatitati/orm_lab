@@ -2,7 +2,7 @@
 
 - [x] Add custom mapping types
 - [ ] Add multiple entity managers
-- [ ] Create test database
+- [x] Create test database
 - [ ] Add doctrine cache
 
 
