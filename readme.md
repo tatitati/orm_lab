@@ -5,6 +5,7 @@
 - [ ] Add multiple entity managers
 - [x] Create test database (multiple environments)
 - [ ] Add doctrine cache
+- [ ] Investigate migrations for test database (to keep sync)
 
 
 # Setup
