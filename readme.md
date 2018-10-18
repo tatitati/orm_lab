@@ -3,8 +3,9 @@
 - [x] Create unidirectionals and bidirectionals relations
 - [x] Add custom mapping types (address)
 - [ ] Add multiple entity managers
-- [x] Create test database
+- [x] Create test database (multiple environments)
 - [ ] Add doctrine cache
+- [ ] Investigate migrations for test database (to keep sync)
 
 
 # Setup

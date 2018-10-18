@@ -24,8 +24,8 @@ class User
 
 
     /**
-     * The column mame by default in database will be sur_name
-     *
+     * The column mame by default in database will be sur_name, but when hydrated as array, it will be 'surName' key
+     * 
      * @ORM\Column(type="string")
      */
     private $surName;
