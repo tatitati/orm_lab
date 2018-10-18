@@ -7,6 +7,7 @@ use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class AddressCustomRepository extends KernelTestCase
@@ -37,12 +38,14 @@ class AddressCustomRepository extends KernelTestCase
             new Address('Madrid', '23NRR', 'McShit Square'),
             $result->getAddress()
         );
-
     }
 
 
     protected function tearDown()
     {
+        $purger = new ORMPurger($this->em);
+        $purger->purge();
+
         parent::tearDown();
         $this->em->close();
         $this->em = null;

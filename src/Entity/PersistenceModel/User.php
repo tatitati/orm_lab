@@ -26,7 +26,7 @@ class User
     /**
      * The column mame by default in database will be sur_name
      *
-     * @ORM\Column(type="string") *
+     * @ORM\Column(type="string")
      */
     private $surName;
 
@@ -51,7 +51,7 @@ class User
      * Example of database value: Madrid,23NRR,McShit Square
      * When reading from database, this is converted into an object Address
      *
-     * @ORM\Column(type="address", name="address") *
+     * @ORM\Column(type="address", name="address")
      */
     private $address;
 

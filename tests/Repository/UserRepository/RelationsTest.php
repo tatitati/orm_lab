@@ -7,6 +7,7 @@ use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class RelationsTest extends KernelTestCase
@@ -29,7 +30,7 @@ class RelationsTest extends KernelTestCase
     {
         $this->userRepository->save($this->user());
 
-        $result = $this->userRepository->findOneBy(['id' => 1]);
+        $result = $this->userRepository->findOneBy(['name' => 'Francisco']);
 
         $this->assertInstanceOf(User::class, $result);
         $this->assertInstanceof(Car::class, $result->getCar());
@@ -86,6 +87,9 @@ class RelationsTest extends KernelTestCase
 
     protected function tearDown()
     {
+        $purger = new ORMPurger($this->em);
+        $purger->purge();
+
         parent::tearDown();
         $this->em->close();
         $this->em = null;
