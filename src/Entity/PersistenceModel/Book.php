@@ -75,4 +75,11 @@ class Book
 		$this->users->add($user);
 		return $this;
     }
+
+    public function removeUser(User $user)
+    {
+    	$this->users->remove($user);
+    	return $this;
+    }
+
 }

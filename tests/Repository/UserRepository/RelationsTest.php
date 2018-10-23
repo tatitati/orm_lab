@@ -7,21 +7,38 @@ use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class RelationsTest extends KernelTestCase
 {
-    /** @var UserRepositoryDB */
-    private $userRepository;
     private $em;
 
-    public function setUp()
+    /** @var UserRepositoryDB */
+    private $userRepository;
+
+	/** @var  Doctrine\ORM\EntityRepository */
+	private $bookRepository;
+
+	public function setUp()
     {
         $kernel = self::bootKernel();
         $this->em = $kernel->getContainer()->get('doctrine')->getManager();
         $this->userRepository = $this->em->getRepository(User::class);
+        // we didn't define any bookRepository, so we have a generic one EntityRepository
+	    $this->bookRepository = $this->em->getRepository(Book::class);
     }
+
+    public function testGenericTypeRepository()
+	{
+		$this->assertInstanceOf(EntityRepository::class, $this->bookRepository);
+
+		$this->assertInstanceOf(EntityRepository::class, $this->userRepository);
+		$this->assertInstanceOf(UserRepositoryDB::class, $this->userRepository);
+	}
 
     /**
      * @test
@@ -57,8 +74,8 @@ class RelationsTest extends KernelTestCase
     {
         $book = new Book('title1', 'category1');
 
-        $user1 = $this->user('user_with_car_and_book_ONE', $book);
-        $user2 = $this->user('user_with_car_and_book_TWO', $book);
+        $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
+        $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
         $book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
 	        ->addUser($user2);
@@ -74,14 +91,47 @@ class RelationsTest extends KernelTestCase
         $this->assertInstanceOf(Book::class, $result->getBook());
 
         // HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
-	    \Doctrine\Common\Util\Debug::dump($result->getBook());
-        $this->assertInstanceOf('Doctrine\ORM\PersistentCollection', $result->getBook()->getUsers());
-        $this->assertEquals('user_with_car_and_book_ONE', $result->getBook()->getUsers()[0]->getName());
-        $this->assertEquals('user_with_car_and_book_TWO', $result->getBook()->getUsers()[1]->getName());
+        $this->assertInstanceOf(Collection::class, $result->getBook()->getUsers());
+        $this->assertEquals($user1Name, $result->getBook()->getUsers()[0]->getName());
+        $this->assertEquals($user2Name, $result->getBook()->getUsers()[1]->getName());
 
         // Circular references very visual in here
         $this->assertInstanceOf(Book::class, $result->getBook()->getUsers()[0]->getBook()->getUsers()[0]->getBook());
     }
+
+	/**
+	 * @test
+	 */
+	public function on_reading_bidirectional_relations_other_option()
+	{
+		$book = new Book('title1', 'category1');
+
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+
+		$this->em->persist($book);
+		$this->em->persist($user1);
+		$this->em->persist($user2);
+        $this->em->flush();
+//		$this->userRepository->save($book);
+//		$this->userRepository->save($user1);
+//		$this->userRepository->save($user2);
+
+		/** @var User $user */
+		$result = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+
+		$this->assertInstanceOf(User::class, $result);
+		$this->assertInstanceOf(Car::class, $result->getCar());
+		$this->assertInstanceOf(Book::class, $result->getBook());
+
+		// HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
+		$this->assertInstanceOf(Collection::class, $result->getBook()->getUsers());
+		$this->assertEquals($user1Name, $result->getBook()->getUsers()[0]->getName());
+		$this->assertEquals($user2Name, $result->getBook()->getUsers()[1]->getName());
+
+		// Circular references very visual in here
+		$this->assertInstanceOf(Book::class, $result->getBook()->getUsers()[0]->getBook()->getUsers()[0]->getBook());
+	}
 
     protected function tearDown()
     {
