@@ -56,15 +56,12 @@ class RelationsTest extends KernelTestCase
     public function on_reading_bidirectional_relations()
     {
         $book = new Book('title1', 'category1');
-        $user1 = $this->user(
-            'user_with_car_and_book_ONE',
-            $book
-        );
 
-        $user2 = $this->user(
-            'user_with_car_and_book_TWO',
-            $book
-        );
+        $user1 = $this->user('user_with_car_and_book_ONE', $book);
+        $user2 = $this->user('user_with_car_and_book_TWO', $book);
+
+        $book->addUser($user1)
+	        ->addUser($user2);
 
         $this->userRepository->save($user1);
         $this->userRepository->save($user2);
@@ -77,6 +74,7 @@ class RelationsTest extends KernelTestCase
         $this->assertInstanceOf(Book::class, $result->getBook());
 
         // HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
+	    \Doctrine\Common\Util\Debug::dump($result->getBook());
         $this->assertInstanceOf('Doctrine\ORM\PersistentCollection', $result->getBook()->getUsers());
         $this->assertEquals('user_with_car_and_book_ONE', $result->getBook()->getUsers()[0]->getName());
         $this->assertEquals('user_with_car_and_book_TWO', $result->getBook()->getUsers()[1]->getName());

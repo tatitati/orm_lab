@@ -2,7 +2,9 @@
 Namespace App\Entity\PersistenceModel;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity
@@ -25,11 +27,18 @@ class Book
     private $category;
 
     /**
-     * We don't need any setter for this bidirectinal property. Is set by Doctrine using reflection. We can find users, and in the result
+     * We don't need any setter for this bidirectinal property. Is set by
+     * Doctrine using reflection. We can find users, and in the result
      * will be filled with books and each book will reference a list of users
      *
-     * @var User[]
-     * @ORM\OneToMany(targetEntity="App\Entity\PersistenceModel\User", mappedBy="book")
+     *
+     *
+     *
+     * Bidirectional - Inverse side
+	 *
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\PersistenceModel\User", mappedBy="book", cascade={"persist", "remove" })
      */
     private $users;
 
@@ -37,6 +46,7 @@ class Book
     {
         $this->title = $title;
         $this->category = $category;
+        $this->users = new ArrayCollection();
     }
 
     public function getId()
@@ -54,8 +64,17 @@ class Book
         return $this->category;
     }
 
-    public function getUsers()
+	/**
+	 * @return ArrayCollection
+	 */
+    public function getUsers(): Collection
     {
         return $this->users;
+    }
+
+    public function addUser(User $user)
+    {
+		$this->users->add($user);
+		return $this;
     }
 }

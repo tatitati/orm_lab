@@ -26,7 +26,7 @@ class AddressCustomRepository extends KernelTestCase
     /**
      * @test
      */
-    public function when_reading_addres_type_is_mapped_properly()
+    public function when_reading_address_type_is_mapped_properly()
     {
         $this->userRepository->save($this->user());
 
@@ -39,7 +39,6 @@ class AddressCustomRepository extends KernelTestCase
             $result->getAddress()
         );
     }
-
 
     protected function tearDown()
     {
