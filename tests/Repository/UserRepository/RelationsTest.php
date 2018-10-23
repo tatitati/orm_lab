@@ -38,6 +38,9 @@ class RelationsTest extends KernelTestCase
 
 		$this->assertThat($this->userRepository,
 			$this->logicalAnd(
+				// we didn't define any bookRepository, so we have a generic one EntityRepository
+				// this is dangerous as this allows to any user to fetch individual entity domains instead of
+				// consistent aggregates as a whole 
 				$this->isInstanceOf(EntityRepository::class),
 				$this->isInstanceOf(UserRepositoryDB::class)
 			)
@@ -60,7 +63,7 @@ class RelationsTest extends KernelTestCase
     /**
      * @test
      */
-    public function findAll_return_an_array_with_entities()
+    public function findAll_return_an_array_of_entities()
     {
         $this->userRepository->save($this->user());
 
@@ -78,37 +81,28 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-    public function many_to_one_relations_are_loaded_as_entity()
+    public function in_many_to_one_the_one_side_is_loaded_as_entity()
     {
 	    $book = new Book('title1', 'category1');
 	    $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 	    $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-
-	    $this->userRepository
-		    ->save($user1)
-		    ->save($user2);
+	    $this->userRepository->save($user1)->save($user2);
 
 	    /** @var User $user */
 	    $user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
 	    $this->assertInstanceOf(Book::class, $user->getBook());
-
-	    $this->assertInstanceOf(Collection::class, $user->getBook()->getUsers());
-	    $this->assertTrue($user->getBook()->getUsers()->isEmpty());
     }
 
 	/**
 	 * @test
 	 */
-	public function one_to_many_load_entities_as_collections_empty()
+	public function in_one_to_many_the_many_side_is_loaded_as_collection_empty()
 	{
 		$book = new Book('title1', 'category1');
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-
-		$this->userRepository
-			->save($user1)
-			->save($user2);
+		$this->userRepository->save($user1)->save($user2);
 
 		/** @var User $user */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
@@ -125,13 +119,8 @@ class RelationsTest extends KernelTestCase
 		$book = new Book('title1', 'category1');
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-
-		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-			->addUser($user2);
-
-		$this->userRepository
-			->save($user1)
-			->save($user2);
+		$book->addUser($user1)->addUser($user2);
+		$this->userRepository->save($user1)->save($user2);
 
 		/** @var User $user */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
