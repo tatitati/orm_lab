@@ -4,6 +4,7 @@ Namespace Tests\App\Repository\UserRepository;
 use App\Entity\CustomMappingTypes\Address;
 use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
+use App\Entity\PersistenceModel\House;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,7 +22,7 @@ class RelationsTest extends KernelTestCase
     private $userRepository;
 
 	/** @var  Doctrine\ORM\EntityRepository */
-	private $bookRepository;
+	private $houseRepository;
 
 	public function setUp()
     {
@@ -29,7 +30,7 @@ class RelationsTest extends KernelTestCase
         $this->em = $kernel->getContainer()->get('doctrine')->getManager();
         $this->userRepository = $this->em->getRepository(User::class);
         // we didn't define any bookRepository, so we have a generic one EntityRepository
-	    $this->bookRepository = $this->em->getRepository(Book::class);
+	    $this->houseRepository = $this->em->getRepository(House::class);
     }
 
     //
@@ -38,7 +39,7 @@ class RelationsTest extends KernelTestCase
 
     public function testTypeRepository()
 	{
-		$this->assertInstanceOf(EntityRepository::class, $this->bookRepository);
+		$this->assertInstanceOf(EntityRepository::class, $this->houseRepository);
 
 		$this->assertThat($this->userRepository,
 			$this->logicalAnd(
@@ -95,15 +96,15 @@ class RelationsTest extends KernelTestCase
 	 */
     public function in_many_to_one_the_one_side_is_loaded_as_entity()
     {
-	    $book = new Book('title1', 'category1');
-	    $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-	    $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+	    $house = new House(34);
+	    $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
+	    $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
 	    $this->userRepository->save($user1)->save($user2);
 
 	    /** @var User $user */
 	    $user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-	    $this->assertInstanceOf(Book::class, $user->getBook());
+	    $this->assertInstanceOf(House::class, $user->getHouse());
     }
 
 	/**
@@ -111,16 +112,16 @@ class RelationsTest extends KernelTestCase
 	 */
 	public function in_one_to_many_the_many_side_is_loaded_as_collection_empty()
 	{
-		$book = new Book('title1', 'category1');
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+		$house = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
 		$this->userRepository->save($user1)->save($user2);
 
-		/** @var User $user */
-		$book = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getBook();
+		/** @var House $house */
+		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
 
-		$this->assertInstanceOf(Collection::class, $book->getUsers());
-		$this->assertTrue($book->getUsers()->isEmpty());
+		$this->assertInstanceOf(Collection::class, $house->getUsers());
+		$this->assertTrue($house->getUsers()->isEmpty());
 	}
 
 	/**
@@ -128,17 +129,17 @@ class RelationsTest extends KernelTestCase
 	 */
 	public function one_to_many_load_entities_as_collections_NO_empty()
 	{
-		$book = new Book('title1', 'category1');
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-		$book->addUser($user1)->addUser($user2);
+		$house1 = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
+		$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
 
-		/** @var Book $book */
-		$book = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getBook();
+		/** @var House $house */
+		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
 
-		$this->assertInstanceOf(Collection::class, $book->getUsers());
-		$this->assertFalse($book->getUsers()->isEmpty());
+		$this->assertInstanceOf(Collection::class, $house->getUsers());
+		$this->assertFalse($house->getUsers()->isEmpty());
 	}
 
 	//
@@ -150,17 +151,17 @@ class RelationsTest extends KernelTestCase
 	 */
 	public function bidirectionals_graph_traversion_can_start_from_book()
 	{
-		$book = new Book('title1', 'category1');
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-		$book->addUser($user1)->addUser($user2);
+		$house1 = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
+		$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
 
-		/** @var Book $book */
-		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
+		/** @var House $house */
+		$house = $this->houseRepository->findOneBy(['roomsAmount' => 34]);
 
-		$this->assertInstanceOf(Collection::class, $book->getUsers());
-		$this->assertCount(2, $book->getUsers());
+		$this->assertInstanceOf(Collection::class, $house->getUsers());
+		$this->assertCount(2, $house->getUsers());
 	}
 
 
@@ -173,17 +174,17 @@ class RelationsTest extends KernelTestCase
 	 */
 	public function circular_references_searching_by_book()
 	{
-		$book1 = new Book('title1', 'category1');
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book1);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book1);
-		$book1->addUser($user1)->addUser($user2);
+		$house1 = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
+		$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
 
-		/** @var Book $bookResult */
-		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
+		/** @var House $house */
+		$house = $this->houseRepository->findOneBy(['roomsAmount' => 34]);
 		
-		$this->assertEquals($book1, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
-		$this->assertInstanceOf(Book::class, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
+		$this->assertEquals($house1, $house->getUsers()[0]->getHouse()->getUsers()[0]->getHouse());
+		$this->assertInstanceOf(House::class, $house->getUsers()[0]->getHouse()->getUsers()[0]->getHouse());
 	}
 
     protected function tearDown()
@@ -196,7 +197,7 @@ class RelationsTest extends KernelTestCase
         $this->em = null;
     }
 
-    private function user(string $name = 'Francisco', $book = null)
+    private function user(string $name = 'Francisco', $house = null)
     {
         return new User(
             $name,
@@ -207,7 +208,7 @@ class RelationsTest extends KernelTestCase
                 '23NRR',
                 'McShit Square'
             ),
-            $book
+            $house
         );
     }
 }

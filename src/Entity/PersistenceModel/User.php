@@ -49,9 +49,9 @@ class User
      *
      * @var Book
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Book", cascade={"persist", "remove" }, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\House", cascade={"persist", "remove" }, inversedBy="users")
      */
-    private $book;
+    private $house;
 
     /**
      * Custom mapping type
@@ -64,12 +64,12 @@ class User
     private $address;
 
 
-    public function __construct(string $name, string $surname, Car $car, Address $address, Book $book = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
+    public function __construct(string $name, string $surname, Car $car, Address $address, House $house = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
         $this->surName = $surname;
         $this->car = $car;
-        $this->book = $book;
+        $this->house = $house;
         $this->address = $address;
     }
 
@@ -93,9 +93,9 @@ class User
         return $this->car;
     }
 
-    public function getBook(): Book
+    public function getHouse(): House
     {
-        return $this->book;
+        return $this->house;
     }
 
     public function getAddress(): Address

@@ -8,9 +8,9 @@ use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="book")
+ * @ORM\Table(name="house")
  */
-class Book
+class House
 {
     /**
      * @var int
@@ -20,11 +20,8 @@ class Book
      */
     private $id;
 
-    /** @ORM\Column(type="string", name="title") **/
-    private $title;
-
-    /** @ORM\Column(type="string", name="category") **/
-    private $category;
+    /** @ORM\Column(type="string", name="rooms_amount") **/
+    private $roomsAmount;
 
     /**
      * We don't need any setter for this bidirectinal property. Is set by
@@ -40,10 +37,9 @@ class Book
      */
     private $users;
 
-    public function __construct(string $title, string $category)
+    public function __construct(int $roomsAmount)
     {
-        $this->title = $title;
-        $this->category = $category;
+        $this->roomsAmount = $roomsAmount;
         $this->users = new ArrayCollection();
     }
 
@@ -52,14 +48,9 @@ class Book
         return $this->id;
     }
 
-    public function getTitle(): string
+    public function getRoomsAmount(): int
     {
-        return $this->title;
-    }
-
-    public function getCategory(): string
-    {
-        return $this->category;
+        return $this->roomsAmount;
     }
 
 	/**
