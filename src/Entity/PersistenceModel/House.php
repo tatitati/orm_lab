@@ -40,6 +40,7 @@ class House
     public function __construct(int $roomsAmount)
     {
         $this->roomsAmount = $roomsAmount;
+        // many sides are always a collection
         $this->users = new ArrayCollection();
     }
 

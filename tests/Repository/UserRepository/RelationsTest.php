@@ -127,7 +127,7 @@ class RelationsTest extends KernelTestCase
 	}
 
 	//
-	// collections EMPTY and NO EMPTY
+	// collections EMPTY or NO EMPTY
 	//
 
 	/**

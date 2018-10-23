@@ -101,6 +101,7 @@ class User
     public function setHouse(House $house)
     {
     	$this->house = $house;
+    	// set bidirectionals relationship
     	$house->addUser($this);
     	return $this;
     }
