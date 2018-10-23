@@ -67,8 +67,12 @@ class RelationsTest extends KernelTestCase
         /** @var User $user */
         $users = $this->userRepository->findAll();
 
-        $this->assertInternalType('array', $users);
-        $this->assertContainsOnlyInstancesOf(User::class, $users);
+        $this->assertThat($users,
+	        $this->logicalAnd(
+				$this->isType('array'),
+		        $this->containsOnlyInstancesOf(User::class)
+			)
+        );
     }
 
 	/**
@@ -103,7 +107,7 @@ class RelationsTest extends KernelTestCase
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
 		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-		->addUser($user2);
+			->addUser($user2);
 
 		$this->userRepository
 			->save($user1)
