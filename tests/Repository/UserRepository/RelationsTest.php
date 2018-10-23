@@ -84,9 +84,6 @@ class RelationsTest extends KernelTestCase
 	    $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 	    $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
-	    $book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-	        ->addUser($user2);
-
 	    $this->userRepository
 		    ->save($user1)
 		    ->save($user2);
@@ -100,7 +97,27 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-	public function one_to_many_relations_are_loaded_as_collection()
+	public function one_to_many_relations_are_loaded_as_empty_collection()
+	{
+		$book = new Book('title1', 'category1');
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+
+		$this->userRepository
+			->save($user1)
+			->save($user2);
+
+		/** @var Book $book */
+		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
+
+		$this->assertInstanceOf(Collection::class, $book->getUsers());
+		$this->assertTrue($book->getUsers()->isEmpty());
+	}
+
+	/**
+	 * @test
+	 */
+	public function one_to_many_relations_are_loaded_as_no_empty_collection()
 	{
 		$book = new Book('title1', 'category1');
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
@@ -117,6 +134,7 @@ class RelationsTest extends KernelTestCase
 		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
 
 		$this->assertInstanceOf(Collection::class, $book->getUsers());
+		$this->assertFalse($book->getUsers()->isEmpty());
 	}
 
     /**
