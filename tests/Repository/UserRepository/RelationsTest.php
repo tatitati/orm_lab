@@ -115,13 +115,17 @@ class RelationsTest extends KernelTestCase
 		$house = new House(34);
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
+		//$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
-		$this->assertTrue($user->getHouse()->getUsers()->isEmpty());
+		$this->assertThat($user->getHouse()->getUsers(),
+			$this->logicalAnd(
+				$this->isInstanceOf(Collection::class),
+				$this->isEmpty()
+		));
 	}
 
 	/**
@@ -138,8 +142,11 @@ class RelationsTest extends KernelTestCase
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
-		$this->assertFalse($user->getHouse()->getUsers()->isEmpty());
+		$this->assertThat($user->getHouse()->getUsers(),
+			$this->logicalAnd(
+				$this->isInstanceOf(Collection::class),
+				$this->logicalNot($this->isEmpty())
+		));
 	}
 
 	/**
@@ -148,6 +155,7 @@ class RelationsTest extends KernelTestCase
 	public function better_bidirectional_association_method()
 	{
 		$house1 = new House(34);
+		// setHouse() update both entities to be bidirectional
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE')->setHouse($house1);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO')->setHouse($house1);
 		$this->userRepository->save($user1)->save($user2);
@@ -155,8 +163,11 @@ class RelationsTest extends KernelTestCase
 		/** @var House $user */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
-		$this->assertFalse($user->getHouse()->getUsers()->isEmpty());
+		$this->assertThat($user->getHouse()->getUsers(),
+			$this->logicalAnd(
+				$this->isInstanceOf(Collection::class),
+				$this->logicalNot($this->isEmpty())
+		));
 	}
 
 	//
@@ -177,8 +188,11 @@ class RelationsTest extends KernelTestCase
 		/** @var House $house */
 		$house = $this->houseRepository->findOneBy(['roomsAmount' => 34]);
 
-		$this->assertInstanceOf(Collection::class, $house->getUsers());
-		$this->assertCount(2, $house->getUsers());
+		$this->assertThat($house->getUsers(),
+			$this->logicalAnd(
+				$this->isInstanceOf(Collection::class),
+				$this->countOf(2)
+			));
 	}
 
 
