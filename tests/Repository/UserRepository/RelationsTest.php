@@ -32,6 +32,10 @@ class RelationsTest extends KernelTestCase
 	    $this->bookRepository = $this->em->getRepository(Book::class);
     }
 
+    //
+	// Repository types
+	//
+
     public function testTypeRepository()
 	{
 		$this->assertInstanceOf(EntityRepository::class, $this->bookRepository);
