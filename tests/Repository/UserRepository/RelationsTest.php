@@ -103,7 +103,7 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-	public function on_reading_bidirectional_relations_other_option()
+	public function can_get_relations_bidirectionals_searching_also_by_book()
 	{
 		$book = new Book('title1', 'category1');
 
@@ -111,7 +111,7 @@ class RelationsTest extends KernelTestCase
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
 		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-		->addUser($user2);
+			->addUser($user2);
 
 		$this->userRepository->save($user1);
 		$this->userRepository->save($user2);
