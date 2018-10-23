@@ -118,10 +118,10 @@ class RelationsTest extends KernelTestCase
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */
-		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $house->getUsers());
-		$this->assertTrue($house->getUsers()->isEmpty());
+		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
+		$this->assertTrue($user->getHouse()->getUsers()->isEmpty());
 	}
 
 	/**
@@ -136,10 +136,10 @@ class RelationsTest extends KernelTestCase
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */
-		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $house->getUsers());
-		$this->assertFalse($house->getUsers()->isEmpty());
+		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
+		$this->assertFalse($user->getHouse()->getUsers()->isEmpty());
 	}
 
 	/**
@@ -152,11 +152,11 @@ class RelationsTest extends KernelTestCase
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO')->setHouse($house1);
 		$this->userRepository->save($user1)->save($user2);
 
-		/** @var House $house */
-		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
+		/** @var House $user */
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertInstanceOf(Collection::class, $house->getUsers());
-		$this->assertFalse($house->getUsers()->isEmpty());
+		$this->assertInstanceOf(Collection::class, $user->getHouse()->getUsers());
+		$this->assertFalse($user->getHouse()->getUsers()->isEmpty());
 	}
 
 	//
