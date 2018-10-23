@@ -148,9 +148,8 @@ class RelationsTest extends KernelTestCase
 	public function better_bidirectional_association_method()
 	{
 		$house1 = new House(34);
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
-		$house1->addUser($user1)->addUser($user2);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE')->setHouse($house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO')->setHouse($house1);
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */
@@ -193,9 +192,9 @@ class RelationsTest extends KernelTestCase
 	public function circular_references_searching_by_book()
 	{
 		$house1 = new House(34);
-		// setHouse update also the bidirectional reference in $house1
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE')->setHouse($house1);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO')->setHouse($house1);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
+		$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */
