@@ -191,31 +191,6 @@ class RelationsTest extends KernelTestCase
 		$this->assertInstanceOf(Book::class, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
 	}
 
-	/**
-	 * @test
-	 */
-	public function a_collection_empty_is_also_returned()
-	{
-		$book1 = new Book('title1', 'category1');
-		$user1 = $this->user('user_with_car_and_book_ONE', $book1);
-		$user2 = $this->user('user_with_car_and_book_TWO', $book1);
-
-		//	$book->addUser($user1)
-		//	    ->addUser($user2);
-
-		$this->userRepository
-			->save($user1)
-			->save($user2);
-
-		/** @var Book $result */
-		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
-
-		// basic relations
-		$this->assertInstanceOf(Book::class, $book);
-		$this->assertInstanceOf(Collection::class, $book->getUsers());
-		$this->assertTrue($book->getUsers()->isEmpty());
-	}
-
     protected function tearDown()
     {
         $purger = new ORMPurger($this->em);
