@@ -176,21 +176,12 @@ class RelationsTest extends KernelTestCase
 		$book1 = new Book('title1', 'category1');
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book1);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book1);
-
-		$book1->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-			->addUser($user2);
-
-		$this->userRepository
-			->save($user1)
-			->save($user2);
+		$book1->addUser($user1)->addUser($user2);
+		$this->userRepository->save($user1)->save($user2);
 
 		/** @var Book $bookResult */
 		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
-
-		// bidirectional relations
-		$this->assertFalse($book->getUsers()->isEmpty());
-
-		// Circular references
+		
 		$this->assertEquals($book1, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
 		$this->assertInstanceOf(Book::class, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
 	}
