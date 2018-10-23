@@ -77,15 +77,15 @@ class RelationsTest extends KernelTestCase
     public function on_reading_bidirectional_relations()
     {
         $book = new Book('title1', 'category1');
-
         $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
         $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
         $book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
 	        ->addUser($user2);
 
-        $this->userRepository->save($user1);
-        $this->userRepository->save($user2);
+        $this->userRepository
+	        ->save($user1)
+            ->save($user2);
 
         /** @var User $user */
         $result = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
@@ -110,15 +110,15 @@ class RelationsTest extends KernelTestCase
 	public function can_get_relations_bidirectionals_searching_also_by_book()
 	{
 		$book = new Book('title1', 'category1');
-
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
 		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
 			->addUser($user2);
 
-		$this->userRepository->save($user1);
-		$this->userRepository->save($user2);
+		$this->userRepository
+			->save($user1)
+			->save($user2);
 
 		/** @var Book $result */
 		$result = $this->bookRepository->findOneBy(['title' => 'title1']);
@@ -142,15 +142,15 @@ class RelationsTest extends KernelTestCase
 	public function a_collection_empty_is_also_returned()
 	{
 		$book = new Book('title1', 'category1');
-
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+		$user1 = $this->user('user_with_car_and_book_ONE', $book);
+		$user2 = $this->user('user_with_car_and_book_TWO', $book);
 
 		//	$book->addUser($user1)
 		//	    ->addUser($user2);
 
-		$this->userRepository->save($user1);
-		$this->userRepository->save($user2);
+		$this->userRepository
+			->save($user1)
+			->save($user2);
 
 		/** @var Book $result */
 		$result = $this->bookRepository->findOneBy(['title' => 'title1']);

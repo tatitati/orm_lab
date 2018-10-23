@@ -11,5 +11,6 @@ Class UserRepositoryDB extends EntityRepository implements UserRepository
         $em = $this->getEntityManager();
         $em->persist($user);
         $em->flush();
+        return $this;
     }
 }
