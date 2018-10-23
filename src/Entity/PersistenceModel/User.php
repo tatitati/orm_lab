@@ -93,7 +93,7 @@ class User
         return $this->car;
     }
 
-    public function getHouse(): House
+    public function getHouse(): ?House
     {
         return $this->house;
     }

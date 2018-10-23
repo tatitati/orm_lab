@@ -110,6 +110,25 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
+	public function many_side_is_always_a_collection()
+	{
+		$house = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
+		$this->userRepository->save($user1)->save($user2);
+
+		/** @var House $house */
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+
+		$this->assertInstanceOf(
+			Collection::class, $user->getHouse()->getUsers(),
+			'Many sides are always a collection'
+		);
+	}
+
+	/**
+	 * @test 
+	 */
 	public function in_one_to_many_the_many_side_is_loaded_as_collection_empty()
 	{
 		$house = new House(34);
@@ -121,11 +140,10 @@ class RelationsTest extends KernelTestCase
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertThat($user->getHouse()->getUsers(),
-			$this->logicalAnd(
-				$this->isInstanceOf(Collection::class),
-				$this->isEmpty()
-		));
+		$this->assertTrue(
+			$user->getHouse()->getUsers()->isEmpty(),
+			'Is empty as any bidirectional relation need updated both sides'
+		);
 	}
 
 	/**
@@ -142,11 +160,10 @@ class RelationsTest extends KernelTestCase
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertThat($user->getHouse()->getUsers(),
-			$this->logicalAnd(
-				$this->isInstanceOf(Collection::class),
-				$this->logicalNot($this->isEmpty())
-		));
+		$this->assertFalse(
+			$user->getHouse()->getUsers()->isEmpty(),
+			'Is not empty as both sides of the bidirectional relation are updated'
+		);
 	}
 
 	/**
