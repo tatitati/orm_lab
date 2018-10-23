@@ -92,7 +92,53 @@ class RelationsTest extends KernelTestCase
 	    $user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
 	    $this->assertInstanceOf(Book::class, $user->getBook());
+
+	    $this->assertInstanceOf(Collection::class, $user->getBook()->getUsers());
+	    $this->assertTrue($user->getBook()->getUsers()->isEmpty());
     }
+
+	/**
+	 * @test
+	 */
+	public function one_to_many_load_entities_as_collections_empty()
+	{
+		$book = new Book('title1', 'category1');
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+
+		$this->userRepository
+			->save($user1)
+			->save($user2);
+
+		/** @var User $user */
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+
+		$this->assertInstanceOf(Collection::class, $user->getBook()->getUsers());
+		$this->assertTrue($user->getBook()->getUsers()->isEmpty());
+	}
+
+	/**
+	 * @test
+	 */
+	public function one_to_many_load_entities_as_collections_NO_empty()
+	{
+		$book = new Book('title1', 'category1');
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
+
+		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
+			->addUser($user2);
+
+		$this->userRepository
+			->save($user1)
+			->save($user2);
+
+		/** @var User $user */
+		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+
+		$this->assertInstanceOf(Collection::class, $user->getBook()->getUsers());
+		$this->assertFalse($user->getBook()->getUsers()->isEmpty());
+	}
 
 	/**
 	 * @test
@@ -137,38 +183,10 @@ class RelationsTest extends KernelTestCase
 		$this->assertFalse($book->getUsers()->isEmpty());
 	}
 
-    /**
-     * @test
-     */
-    public function on_reading_bidirectional_relations()
-    {
-        $book = new Book('title1', 'category1');
-        $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
-        $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
-
-        $book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
-	        ->addUser($user2);
-
-        $this->userRepository
-	        ->save($user1)
-            ->save($user2);
-
-        /** @var User $user */
-        $user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
-
-        // Bidirectional relationships
-        $this->assertInstanceOf(Collection::class, $user->getBook()->getUsers());
-        $this->assertEquals($user1Name, $user->getBook()->getUsers()[0]->getName());
-        $this->assertEquals($user2Name, $user->getBook()->getUsers()[1]->getName());
-
-        // Circular references very visual in here
-        $this->assertInstanceOf(Book::class, $user->getBook()->getUsers()[0]->getBook()->getUsers()[0]->getBook());
-    }
-
 	/**
 	 * @test
 	 */
-	public function can_get_relations_bidirectionals_searching_also_by_book()
+	public function circular_references_searching_by_book()
 	{
 		$book1 = new Book('title1', 'category1');
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book1);
@@ -185,8 +203,7 @@ class RelationsTest extends KernelTestCase
 		$book = $this->bookRepository->findOneBy(['title' => 'title1']);
 
 		// bidirectional relations
-		$this->assertEquals($user1Name, $book->getUsers()[0]->getName());
-		$this->assertEquals($user2Name, $book->getUsers()[1]->getName());
+		$this->assertFalse($book->getUsers()->isEmpty());
 
 		// Circular references
 		$this->assertEquals($book1, $book->getUsers()[0]->getBook()->getUsers()[0]->getBook());
