@@ -87,8 +87,8 @@ class RelationsTest extends KernelTestCase
         );
     }
 
-	//
-	// collections EMPTY and NO EMPTY
+    //
+    // Entity or Collection
 	//
 
 	/**
@@ -126,8 +126,12 @@ class RelationsTest extends KernelTestCase
 		);
 	}
 
+	//
+	// collections EMPTY and NO EMPTY
+	//
+
 	/**
-	 * @test 
+	 * @test
 	 */
 	public function in_one_to_many_the_many_side_is_loaded_as_collection_empty()
 	{
