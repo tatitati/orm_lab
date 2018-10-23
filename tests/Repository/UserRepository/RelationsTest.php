@@ -36,8 +36,12 @@ class RelationsTest extends KernelTestCase
 	{
 		$this->assertInstanceOf(EntityRepository::class, $this->bookRepository);
 
-		$this->assertInstanceOf(EntityRepository::class, $this->userRepository);
-		$this->assertInstanceOf(UserRepositoryDB::class, $this->userRepository);
+		$this->assertThat($this->userRepository,
+			$this->logicalAnd(
+				$this->isInstanceOf(EntityRepository::class),
+				$this->isInstanceOf(UserRepositoryDB::class)
+			)
+		);
 	}
 
     /**
