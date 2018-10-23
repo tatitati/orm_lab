@@ -43,8 +43,8 @@ class RelationsTest extends KernelTestCase
 
 		$this->assertThat($this->userRepository,
 			$this->logicalAnd(
-				// we didn't define any bookRepository, so we have a generic one EntityRepository
-				// this is dangerous as this allows to any user to fetch individual entity domains instead of
+				// we didn't define any houseRepository class, so we have a generic one EntityRepository.
+				// This is dangerous as this allows to any user to fetch individual entity domains instead of
 				// consistent aggregates as a whole
 				$this->isInstanceOf(EntityRepository::class),
 				$this->isInstanceOf(UserRepositoryDB::class)
@@ -142,6 +142,24 @@ class RelationsTest extends KernelTestCase
 		$this->assertFalse($house->getUsers()->isEmpty());
 	}
 
+	/**
+	 * @test
+	 */
+	public function better_bidirectional_association_method()
+	{
+		$house1 = new House(34);
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
+		$house1->addUser($user1)->addUser($user2);
+		$this->userRepository->save($user1)->save($user2);
+
+		/** @var House $house */
+		$house = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE'])->getHouse();
+
+		$this->assertInstanceOf(Collection::class, $house->getUsers());
+		$this->assertFalse($house->getUsers()->isEmpty());
+	}
+
 	//
 	// Graph traversion
 	//
@@ -175,9 +193,9 @@ class RelationsTest extends KernelTestCase
 	public function circular_references_searching_by_book()
 	{
 		$house1 = new House(34);
-		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
-		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house1);
-		$house1->addUser($user1)->addUser($user2);
+		// setHouse update also the bidirectional reference in $house1
+		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE')->setHouse($house1);
+		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO')->setHouse($house1);
 		$this->userRepository->save($user1)->save($user2);
 
 		/** @var House $house */

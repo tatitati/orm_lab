@@ -98,6 +98,13 @@ class User
         return $this->house;
     }
 
+    public function setHouse(House $house)
+    {
+    	$this->house = $house;
+    	$house->addUser($this);
+    	return $this;
+    }
+
     public function getAddress(): Address
     {
         return $this->address;
