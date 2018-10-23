@@ -40,7 +40,7 @@ class RelationsTest extends KernelTestCase
 			$this->logicalAnd(
 				// we didn't define any bookRepository, so we have a generic one EntityRepository
 				// this is dangerous as this allows to any user to fetch individual entity domains instead of
-				// consistent aggregates as a whole 
+				// consistent aggregates as a whole
 				$this->isInstanceOf(EntityRepository::class),
 				$this->isInstanceOf(UserRepositoryDB::class)
 			)
