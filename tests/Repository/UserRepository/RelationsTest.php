@@ -60,7 +60,7 @@ class RelationsTest extends KernelTestCase
         $user1 = $this->user('user_with_car_and_book_ONE', $book);
         $user2 = $this->user('user_with_car_and_book_TWO', $book);
 
-        $book->addUser($user1)
+        $book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
 	        ->addUser($user2);
 
         $this->userRepository->save($user1);

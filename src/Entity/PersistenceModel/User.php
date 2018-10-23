@@ -31,21 +31,24 @@ class User
     private $surName;
 
     /**
-     * Unidirectional
-     *
      * I DONT NEED TO ADD inversedBy IN HERE AS I'M NOT DOING BIDIRECTIONAL RELATIONSHIPS. AS YOU
      * CAN SEE I DIDN'T ADD ANY OneToMany SPEC IN THE Car entity. This last is only needed if you want a
      * bidirectional relationship.
      *
+     *
+     * UNIDIRECTIONAL
+     *
      * @var Car
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Car", cascade={"persist", "remove" })
      */
     private $car;
 
     /**
-     * Bidirectional - Owning side
+     * BIDIRECTIONAL - OWNING SIDE
      *
      * @var Book
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Book", cascade={"persist", "remove" }, inversedBy="users")
      */
     private $book;
@@ -54,6 +57,7 @@ class User
      * Custom mapping type
      * Example of database value: Madrid,23NRR,McShit Square
      * When reading from database, this is converted into an object Address
+     *
      *
      * @ORM\Column(type="address", name="address")
      */

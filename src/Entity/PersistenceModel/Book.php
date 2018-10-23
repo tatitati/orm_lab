@@ -32,9 +32,7 @@ class Book
      * will be filled with books and each book will reference a list of users
      *
      *
-     *
-     *
-     * Bidirectional - Inverse side
+     * BIDIRECTIONAL - INVERSE SIDE
 	 *
      * @var ArrayCollection
      *
