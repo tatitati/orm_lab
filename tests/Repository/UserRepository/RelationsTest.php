@@ -177,7 +177,7 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-	public function bidirectionals_graph_traversion_can_start_from_book()
+	public function bidirectionals_graph_traversion_can_start_from_house()
 	{
 		$house1 = new House(34);
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house1);
