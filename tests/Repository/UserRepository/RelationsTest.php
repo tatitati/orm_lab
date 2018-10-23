@@ -86,11 +86,12 @@ class RelationsTest extends KernelTestCase
         /** @var User $user */
         $result = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
+	    // basic relations
         $this->assertInstanceOf(User::class, $result);
         $this->assertInstanceOf(Car::class, $result->getCar());
         $this->assertInstanceOf(Book::class, $result->getBook());
 
-        // HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
+        // Bidirectional relationships
         $this->assertInstanceOf(Collection::class, $result->getBook()->getUsers());
         $this->assertEquals($user1Name, $result->getBook()->getUsers()[0]->getName());
         $this->assertEquals($user2Name, $result->getBook()->getUsers()[1]->getName());
@@ -109,28 +110,26 @@ class RelationsTest extends KernelTestCase
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $book);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $book);
 
-		$this->em->persist($book);
-		$this->em->persist($user1);
-		$this->em->persist($user2);
-        $this->em->flush();
-//		$this->userRepository->save($book);
-//		$this->userRepository->save($user1);
-//		$this->userRepository->save($user2);
+		$book->addUser($user1)// modify these books also modify the book passed to User1 and User2 as object are reference types
+		->addUser($user2);
 
-		/** @var User $user */
-		$result = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
+		$this->userRepository->save($user1);
+		$this->userRepository->save($user2);
 
-		$this->assertInstanceOf(User::class, $result);
-		$this->assertInstanceOf(Car::class, $result->getCar());
-		$this->assertInstanceOf(Book::class, $result->getBook());
+		/** @var Book $result */
+		$result = $this->bookRepository->findOneBy(['title' => 'title1']);
 
-		// HERE WE CAN SEE THE BIDIRECTIONAL RELATION WORKING
-		$this->assertInstanceOf(Collection::class, $result->getBook()->getUsers());
-		$this->assertEquals($user1Name, $result->getBook()->getUsers()[0]->getName());
-		$this->assertEquals($user2Name, $result->getBook()->getUsers()[1]->getName());
+		// basic relations
+		$this->assertInstanceOf(Book::class, $result);
+		$this->assertInstanceOf(Collection::class, $result->getUsers());
 
-		// Circular references very visual in here
-		$this->assertInstanceOf(Book::class, $result->getBook()->getUsers()[0]->getBook()->getUsers()[0]->getBook());
+		// bidirectional relations
+		$this->assertEquals($user1Name, $result->getUsers()[0]->getName());
+		$this->assertEquals($user2Name, $result->getUsers()[1]->getName());
+
+		// Circular references
+		$this->assertEquals($book, $result->getUsers()[0]->getBook()->getUsers()[0]->getBook());
+		$this->assertInstanceOf(Book::class, $result->getUsers()[0]->getBook()->getUsers()[0]->getBook());
 	}
 
     protected function tearDown()
