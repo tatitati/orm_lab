@@ -31,24 +31,21 @@ class HydratationsTest extends KernelTestCase
     public function when_hydratation_is_array_then_keys_are_the_same_entity_field_names()
     {
         $this->userRepository->save($this->user());
-
         $qb = $this->em->createQueryBuilder();
         $query = $qb->select(['u'])
             ->from('App\Entity\PersistenceModel\User', 'u')
             ->setMaxResults(1)
             ->getQuery();
 
-        // this two produces the same:
         $result = $query->getArrayResult();
 
+        $this->assertInstanceOf(Address::class, $result[0]['address']);
         $this->assertThat($result[0],
             $this->logicalAnd(
                 $this->arrayHasKey('id'),
                 $this->arrayHasKey('name'),
                 $this->arrayHasKey('surName')
         ));
-
-        $this->assertInstanceOf(Address::class, $result[0]['address']);
     }
 
     /**
@@ -57,7 +54,6 @@ class HydratationsTest extends KernelTestCase
     public function test_when_hydratation_is_scalar()
     {
         $this->userRepository->save($this->user());
-
         $qb = $this->em->createQueryBuilder();
         $query = $qb->select(['u'])
             ->from('App\Entity\PersistenceModel\User', 'u')
@@ -66,14 +62,13 @@ class HydratationsTest extends KernelTestCase
 
         $result = $query->getResult(Query::HYDRATE_SCALAR);
 
+        $this->assertInstanceOf(Address::class, $result[0]['u_address']);
         $this->assertThat($result[0],
             $this->logicalAnd(
                 $this->arrayHasKey('u_id'),
                 $this->arrayHasKey('u_name'),
                 $this->arrayHasKey('u_surName')
             ));
-
-        $this->assertInstanceOf(Address::class, $result[0]['u_address']);
     }
 
 
