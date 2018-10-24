@@ -39,7 +39,6 @@ class HydratationsTest extends KernelTestCase
             ->getQuery();
 
         // this two produces the same:
-        //$result = $query->getResult(Query::HYDRATE_ARRAY);
         $result = $query->getArrayResult();
 
         $this->assertThat($result[0],
