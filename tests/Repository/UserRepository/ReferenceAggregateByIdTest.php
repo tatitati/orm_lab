@@ -23,6 +23,9 @@ class ReferenceAggregateByIdTest extends KernelTestCase
 		$this->userRepository = $this->em->getRepository(User::class);
 	}
 
+	/**
+	 * @test
+	 */
 	public function we_can_reference_to_a_different_aggregate_knowing_how_lazy_calls_work_and_controlling_access_in_entities()
 	{
 		$this->userRepository->save(UserBuilder::any()->build());
