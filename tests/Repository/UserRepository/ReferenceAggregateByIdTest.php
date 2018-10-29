@@ -41,7 +41,7 @@ class ReferenceAggregateByIdTest extends KernelTestCase
 					$this->logicalNot($this->isEmpty()),
 					$this->isType('int')
 		));
-
+		$this->assertInstanceOf(Proxy::class, $user->getCountry(), 'We requested the id, still is a proxy');
 
 		$user->getCountry()->getName();
 		$this->assertInstanceOf(Country::class, $user->getCountry(), 'After request a different field of ID, then the Proxy becomes a real entity');
