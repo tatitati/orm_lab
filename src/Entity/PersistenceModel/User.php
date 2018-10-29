@@ -119,13 +119,20 @@ class User
         return $this->address;
     }
 
+
+    // this should be avoided!!!!!
+	// this allow the user to request any other parameter from the country
+	// and in that case, instead of a proxy object we will load the whole with a secondary request
+	// the whole aggregate.
+	// I leave this in here for testing porpuses, but it shouldnt exist this getter, only the getCountryid()
     public function getCountry(): Country
 	{
 		return $this->country;
 	}
 
     public function getCountryId(): int {
-    	// lazy relation, it only loads the id without any secondary request to db
+    	// when requesting a related item, if we don't request any other parameter apart of the id
+    	// then we don't load the whole aggregate. The Country in here is a Proxy, the id is a real id
     	return $this->country->getId();
 	}
 

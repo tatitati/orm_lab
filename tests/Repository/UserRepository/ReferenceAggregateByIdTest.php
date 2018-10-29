@@ -26,7 +26,7 @@ class ReferenceAggregateByIdTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-	public function we_can_reference_to_a_different_aggregate_knowing_how_lazy_calls_work_and_controlling_access_in_entities()
+	public function we_can_reference_to_a_different_aggregate_knowing_how_lazy_calls_work_and_avoiding_to_call_non_ids()
 	{
 		$this->userRepository->save(UserBuilder::any()->build());
 		$this->em->clear();
@@ -35,14 +35,7 @@ class ReferenceAggregateByIdTest extends KernelTestCase
 
 
 		$this->assertInstanceOf(Proxy::class, $user->getCountry(), 'Until we dont request an field different of id(), we will get a proxy');
-		$this->assertThat(
-			$user->getCountryId(),
-				$this->logicalAnd(
-					$this->logicalNot($this->isEmpty()),
-					$this->isType('int')
-		));
-		$this->assertInstanceOf(Proxy::class, $user->getCountry(), 'We requested the id, still is a proxy');
-
+		$this->assertInternalType('int', $user->getCountry()->getId(), 'We requested the id, still is a proxy');
 		$user->getCountry()->getName();
 		$this->assertInstanceOf(Country::class, $user->getCountry(), 'After request a different field of ID, then the Proxy becomes a real entity');
 	}
