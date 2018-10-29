@@ -32,6 +32,9 @@ class HydratationsTest extends KernelTestCase
     public function when_hydratation_is_array_then_keys_are_the_same_entity_field_names()
     {
         $this->userRepository->save($this->user());
+	    $this->em->clear();
+
+
         $qb = $this->em->createQueryBuilder();
         $query = $qb->select(['u'])
             ->from('App\Entity\PersistenceModel\User', 'u')
@@ -55,6 +58,8 @@ class HydratationsTest extends KernelTestCase
     public function test_when_hydratation_is_scalar()
     {
         $this->userRepository->save($this->user());
+	    $this->em->clear();
+
         $qb = $this->em->createQueryBuilder();
         $query = $qb->select(['u'])
             ->from('App\Entity\PersistenceModel\User', 'u')

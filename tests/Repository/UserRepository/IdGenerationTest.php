@@ -36,6 +36,7 @@ class IdGenerationTest extends KernelTestCase
         $this->assertNull($car->getId());
 
         $this->userRepository->save($user);
+	    $this->em->clear();
 
         // If we are creating a new User, the id is automatically populated even if the
         // property is private (using reflection) and there is no setter for it.

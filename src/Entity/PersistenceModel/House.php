@@ -31,9 +31,9 @@ class House
      *
      * BIDIRECTIONAL - INVERSE SIDE
 	 *
-     * @var ArrayCollection
+     * @var ArrayCollection|User[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\PersistenceModel\User", mappedBy="book", cascade={"persist", "remove" })
+     * @ORM\OneToMany(targetEntity="App\Entity\PersistenceModel\User", mappedBy="house", cascade={"persist", "remove" })
      */
     private $users;
 

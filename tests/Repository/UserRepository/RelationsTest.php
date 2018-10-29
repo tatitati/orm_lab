@@ -63,6 +63,7 @@ class RelationsTest extends KernelTestCase
     public function findOneBy_return_an_entity()
     {
         $this->userRepository->save($this->user());
+	    $this->em->clear();
 
         $user = $this->userRepository->findOneBy(['name' => 'Francisco']);
 
@@ -76,6 +77,7 @@ class RelationsTest extends KernelTestCase
     public function findAll_return_an_array_of_entities()
     {
         $this->userRepository->save($this->user());
+	    $this->em->clear();
 
         /** @var User $user */
         $users = $this->userRepository->findAll();
@@ -101,6 +103,7 @@ class RelationsTest extends KernelTestCase
 	    $user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
 	    $user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
 	    $this->userRepository->save($user1)->save($user2);
+	    $this->em->clear();
 
 	    /** @var User $user */
 	    $user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
@@ -117,6 +120,7 @@ class RelationsTest extends KernelTestCase
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
 		$this->userRepository->save($user1)->save($user2);
+		$this->em->clear();
 
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
@@ -134,21 +138,19 @@ class RelationsTest extends KernelTestCase
 	/**
 	 * @test
 	 */
-	public function in_one_to_many_the_many_side_is_loaded_as_collection_empty()
+	public function one_to_many_is_bidirectional()
 	{
 		$house = new House(34);
 		$user1 = $this->user($user1Name = 'user_with_car_and_book_ONE', $house);
 		$user2 = $this->user($user2Name = 'user_with_car_and_book_TWO', $house);
 		//$house1->addUser($user1)->addUser($user2);
 		$this->userRepository->save($user1)->save($user2);
+		$this->em->clear();
 
 		/** @var House $house */
 		$user = $this->userRepository->findOneBy(['name' => 'user_with_car_and_book_ONE']);
 
-		$this->assertTrue(
-			$user->getHouse()->getUsers()->isEmpty(),
-			'Is empty as any bidirectional relation need updated both sides'
-		);
+		$this->assertContainsOnlyInstancesOf(User::class, 	$user->getHouse()->getUsers());
 	}
 
 	/**

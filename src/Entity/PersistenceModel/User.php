@@ -22,6 +22,15 @@ class User
     /** @ORM\Column(type="string", name="name") **/
     private $name;
 
+	/**
+	 * Custom mapping type
+	 * Example of database value: Madrid,23NRR,McShit Square
+	 * When reading from database, this is converted into an object Address
+	 *
+	 *
+	 * @ORM\Column(type="address", name="address")
+	 */
+	private $address;
 
     /**
      * The column mame by default in database will be sur_name, but when hydrated as array, it will be 'surName' key
@@ -47,30 +56,29 @@ class User
     /**
      * BIDIRECTIONAL - OWNING SIDE
      *
-     * @var Book
+     * @var House
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\House", cascade={"persist", "remove" }, inversedBy="users")
      */
     private $house;
 
-    /**
-     * Custom mapping type
-     * Example of database value: Madrid,23NRR,McShit Square
-     * When reading from database, this is converted into an object Address
-     *
-     *
-     * @ORM\Column(type="address", name="address")
-     */
-    private $address;
+	/**
+	 * WE WANT TO REFERENCE OTHER AGGREGATES BY ID. So we want to force a foreign key but at the same time avoid a relation
+	 *
+	 * @var Country
+	 *
+	 * @ORM\ManyToOne(targetEntity="App\Entity\PersistenceModel\Country", cascade={"persist", "remove"})
+	 */
+    private $country;
 
-
-    public function __construct(string $name, string $surname, Car $car, Address $address, House $house = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
+    public function __construct(string $name, string $surname, Car $car, Address $address, Country $country, House $house = null) // because in the constructor $car is a mandatory value, this means that is not nullable in db
     {
         $this->name = $name;
         $this->surName = $surname;
         $this->car = $car;
-        $this->house = $house;
         $this->address = $address;
+        $this->country = $country;
+        $this->house = $house;
     }
 
     public function getId(): ?int
@@ -110,6 +118,16 @@ class User
     {
         return $this->address;
     }
+
+    public function getCountry(): Country
+	{
+		return $this->country;
+	}
+
+    public function getCountryId(): int {
+    	// lazy relation, it only loads the id without any secondary request to db
+    	return $this->country->getId();
+	}
 
     public function setCar()
     {

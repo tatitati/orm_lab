@@ -30,6 +30,7 @@ class AddressCustomRepository extends KernelTestCase
     public function when_reading_address_type_is_mapped_properly()
     {
         $this->userRepository->save(UserBuilder::any()->build());
+	    $this->em->clear();
 
         /** @var User $result */
         $result = $this->userRepository->findOneBy(['name' => 'Francisco']);

@@ -5,6 +5,7 @@ namespace App\Tests\Repository\UserRepository;
 use App\Entity\CustomMappingTypes\Address;
 use App\Entity\CustomMappingTypes\CountryId;
 use App\Entity\PersistenceModel\Car;
+use App\Entity\PersistenceModel\Country;
 use App\Entity\PersistenceModel\House;
 use App\Entity\PersistenceModel\User;
 
@@ -22,8 +23,8 @@ class UserBuilder
 	/** @var Address */
 	private $address;
 
-	/** @var CountryId */
-	private $countryId;
+	/** @var Country */
+	private $country;
 
 	/** @var House */
 	private $house;
@@ -35,10 +36,10 @@ class UserBuilder
 		$surname = 'surname1 surname2';
 		$car = new Car('Renault', 'black');
 		$address = new Address('Madrid', '23NRR', 'McShit Square');
-		//$countryId = new CountryId(23);
+		$country = new Country('Africa', 2323);
 		$house = null;
 
-		return new self($name, $surname, $car, $address, $house);
+		return new self($name, $surname, $car, $address, $country,  $house);
 
 	}
 
@@ -66,9 +67,9 @@ class UserBuilder
 		return $this;
 	}
 
-	public function withCountryId(int $id)
+	public function withCountry(Country $country)
 	{
-		$this->counttryId = new CountryId($id);
+		$this->country = $country;
 		return $this;
 	}
 
@@ -86,18 +87,18 @@ class UserBuilder
 			$this->surname,
 			$this->car,
 			$this->address,
-			//$this->countryId,
+			$this->country,
 			$this->house
 		);
 	}
 
-	private function __construct(string $name, string $surname, Car $car, Address $address, ?House $house)
+	private function __construct(string $name, string $surname, Car $car, Address $address, Country $country, ?House $house)
 	{
 		$this->name = $name;
 		$this->surname = $surname;
 		$this->car = $car;
 		$this->address = $address;
-		//$this->countryId = $countryId;
+		$this->country = $country;
 		$this->house = $house;
 	}
 }
