@@ -7,6 +7,7 @@ use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\House;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
+use App\Tests\Repository\UserRepository\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -251,16 +252,6 @@ class RelationsTest extends KernelTestCase
 
     private function user(string $name = 'Francisco', $house = null)
     {
-        return new User(
-            $name,
-            'surname1 surname2',
-            new Car('Renault', 'black'),
-            new Address(
-                'Madrid',
-                '23NRR',
-                'McShit Square'
-            ),
-            $house
-        );
+    	return UserBuilder::any()->withName($name)->withHouse($house)->build();
     }
 }

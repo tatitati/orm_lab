@@ -6,6 +6,7 @@ use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
+use App\Tests\Repository\UserRepository\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -28,7 +29,7 @@ class AddressCustomRepository extends KernelTestCase
      */
     public function when_reading_address_type_is_mapped_properly()
     {
-        $this->userRepository->save($this->user());
+        $this->userRepository->save(UserBuilder::any()->build());
 
         /** @var User $result */
         $result = $this->userRepository->findOneBy(['name' => 'Francisco']);
@@ -48,19 +49,5 @@ class AddressCustomRepository extends KernelTestCase
         parent::tearDown();
         $this->em->close();
         $this->em = null;
-    }
-
-    private function user()
-    {
-        return new User(
-            'Francisco',
-            'surname1 surname2',
-            new Car('Renault', 'black'),
-            new Address(
-                'Madrid',
-                '23NRR',
-                'McShit Square'
-            )
-        );
     }
 }

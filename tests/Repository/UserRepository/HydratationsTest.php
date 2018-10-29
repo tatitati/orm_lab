@@ -6,6 +6,7 @@ use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
+use App\Tests\Repository\UserRepository\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\AbstractQuery;
@@ -90,15 +91,6 @@ class HydratationsTest extends KernelTestCase
 
     private function user()
     {
-        return new User(
-            'Francisco',
-            'surname1 surname2',
-            new Car('Renault', 'black'),
-            new Address(
-                'Madrid',
-                '23NRR',
-                'McShit Square'
-            )
-        );
+        return UserBuilder::any()->build();
     }
 }

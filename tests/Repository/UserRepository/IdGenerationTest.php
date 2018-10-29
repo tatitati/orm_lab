@@ -6,6 +6,7 @@ use App\Entity\PersistenceModel\Book;
 use App\Entity\PersistenceModel\Car;
 use App\Entity\PersistenceModel\User;
 use App\Repository\UserRepositoryDB;
+use App\Tests\Repository\UserRepository\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -65,16 +66,7 @@ class IdGenerationTest extends KernelTestCase
 
     private function user(Car $car)
     {
-        return new User(
-            'Francisco',
-            'surname1 surname2',
-            $car,
-            new Address(
-                'Madrid',
-                '23NRR',
-                'McShit Square'
-            )
-        );
+	    return UserBuilder::any()->withCar($car)->build();
     }
 
 }
