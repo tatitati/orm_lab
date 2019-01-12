@@ -4,6 +4,7 @@
 - [x] Add custom mapping types (address)
 - [ ] Add multiple entity managers
 - [x] Create test database (multiple environments)
+- [x] Investigate how to reference another aggregate only by id rather than by reference
 - [ ] Add doctrine cache
 - [ ] Investigate migrations for test database (to keep sync)
 
